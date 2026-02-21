@@ -1,7 +1,6 @@
 ### AL ###
 #Template for AL projects for Dynamics 365 Business Central
 #launch.json folder
-.vscode/
 #Cache folder
 .alcache/
 #Symbols folder
@@ -20,3 +19,48 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+### Gradle ###
+.gradle/
+build/
+gradle-app.setting
+.gradletasknamecache
+out/
+
+### IDEA (IntelliJ) ###
+.idea/
+*.iml
+*.iws
+*.ipr
+*.idc
+.classpath
+.project
+.c9/
+*.launch
+*.sublime-workspace
+*.sublime-project
+
+### Java ###
+*.class
+*.log
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+target/
+*.swp
+*.swo
+*~
+
+### IDE ###
+.vscode/
+.settings/
+
+### OS ###
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+
