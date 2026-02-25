@@ -2,10 +2,10 @@
 package com.zappqui.api.auth.zappqui_auth_service.web;
 
 import com.zappqui.api.auth.zappqui_auth_service.service.AuthService;
-import com.zappqui.api.auth.zappqui_auth_service.web.dto.LoginRequest;
-import com.zappqui.api.auth.zappqui_auth_service.web.dto.TokenResponse;
-import com.zappqui.api.auth.zappqui_auth_service.web.dto.ValidateRequest;
-import com.zappqui.api.auth.zappqui_auth_service.web.dto.ValidateResponse;
+import com.zappqui.api.auth.zappqui_auth_service.dto.LoginRequest;
+import com.zappqui.api.auth.zappqui_auth_service.dto.TokenResponse;
+import com.zappqui.api.auth.zappqui_auth_service.dto.ValidateRequest;
+import com.zappqui.api.auth.zappqui_auth_service.dto.ValidateResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

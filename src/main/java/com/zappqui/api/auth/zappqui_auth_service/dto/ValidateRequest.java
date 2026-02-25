@@ -1,6 +1,11 @@
 // Java
-package com.zappqui.api.auth.zappqui_auth_service.web.dto;
+package com.zappqui.api.auth.zappqui_auth_service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class ValidateRequest {
     private String token;
 

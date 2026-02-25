@@ -1,5 +1,5 @@
 // Java
-package com.zappqui.api.auth.zappqui_auth_service.web.dto;
+package com.zappqui.api.auth.zappqui_auth_service.dto;
 
 public class TokenResponse {
     private String token;
