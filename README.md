@@ -232,26 +232,27 @@ Verifica o status da aplicação e suas dependências.
 
 Cria um novo usuário no sistema.
 
+> ⚠️ **Regras de senha**: mínimo 8 caracteres, incluindo pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 caractere especial (`@$!%*?&`).
+
 **Request Body**:
 ```json
 {
   "username": "joao.silva",
-  "password": "senha123"
+  "password": "Senha@123"
 }
 ```
 
 **Response (200 OK)**:
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "id": 1,
   "username": "joao.silva"
 }
 ```
 
 **Status Codes**:
 - `200 OK` - Usuário criado com sucesso
-- `400 Bad Request` - Dados inválidos
-- `409 Conflict` - Usuário já existe
+- `400 Bad Request` - Dados inválidos (username duplicado, senha fraca, campos obrigatórios ausentes)
 
 ### 3. Login (Autenticação)
 
@@ -263,15 +264,17 @@ Autentica um usuário e retorna um token JWT.
 ```json
 {
   "username": "joao.silva",
-  "password": "senha123",
+  "password": "Senha@123",
   "ttlSeconds": 3600
 }
 ```
 
+> O campo `ttlSeconds` é opcional. Se for `0` ou não informado, o token terá validade padrão de 900 segundos (15 minutos).
+
 **Response (200 OK)**:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "eyJhbGciOiJIUzUxMiJ9..."
 }
 ```
 
@@ -288,11 +291,11 @@ Valida um token JWT e retorna o subject (username).
 **Request Body**:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "eyJhbGciOiJIUzUxMiJ9..."
 }
 ```
 
-**Response (200 OK)**:
+**Response (200 OK) — Token válido**:
 ```json
 {
   "valid": true,
@@ -300,7 +303,7 @@ Valida um token JWT e retorna o subject (username).
 }
 ```
 
-**Response (Token Inválido)**:
+**Response (200 OK) — Token inválido/expirado**:
 ```json
 {
   "valid": false,
@@ -308,18 +311,45 @@ Valida um token JWT e retorna o subject (username).
 }
 ```
 
-## 📚 Documentação da API (Swagger)
+## 📚 Documentação da API (Swagger / OpenAPI)
 
-Acesse a documentação interativa em:
+A API possui documentação interativa completa via **Swagger UI**, gerada automaticamente pelo **SpringDoc OpenAPI 2.7.0**.
 
-```
-http://localhost:8081/swagger-ui.html
-```
+### Como acessar
 
-OpenAPI JSON:
-```
-http://localhost:8081/v3/api-docs
-```
+Com a aplicação rodando, acesse:
+
+| Recurso | URL |
+|---|---|
+| **Swagger UI** | [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html) |
+| **OpenAPI JSON** | [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs) |
+| **OpenAPI YAML** | [http://localhost:8081/v3/api-docs.yaml](http://localhost:8081/v3/api-docs.yaml) |
+
+### O que está documentado
+
+O Swagger inclui documentação completa de todos os endpoints da API:
+
+- **Autenticação** (`/auth`)
+  - `POST /auth/login` — Login e geração de token JWT
+  - `POST /auth/validate` — Validação de token JWT
+- **Usuários** (`/users`)
+  - `POST /users` — Criação de novo usuário
+
+Cada endpoint inclui:
+- ✅ Descrição detalhada da operação
+- ✅ Exemplos de request/response
+- ✅ Schemas dos DTOs com exemplos de valores
+- ✅ Códigos de status HTTP documentados
+- ✅ Validações de campos obrigatórios
+
+### Testando via Swagger UI
+
+1. Acesse `http://localhost:8081/swagger-ui.html`
+2. Expanda o endpoint desejado
+3. Clique em **"Try it out"**
+4. Preencha os campos do request body
+5. Clique em **"Execute"**
+6. Veja a resposta diretamente na interface
 
 ## 🔐 Segurança
 

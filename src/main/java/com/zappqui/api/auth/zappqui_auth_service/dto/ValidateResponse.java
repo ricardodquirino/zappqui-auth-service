@@ -1,8 +1,14 @@
 // Java
 package com.zappqui.api.auth.zappqui_auth_service.dto;
 
+ import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Resultado da validação de token")
 public class ValidateResponse {
+    @Schema(description = "Indica se o token é válido", example = "true")
     private boolean valid;
+
+    @Schema(description = "Subject (username) extraído do token. Null se inválido", example = "joao.silva")
     private String subject;
 
     public ValidateResponse() { }
