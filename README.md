@@ -147,6 +147,128 @@ docker-compose logs -f app
 docker-compose up -d --build
 ```
 
+#### 2.5 Parar e remover volumes (limpeza completa)
+
+```bash
+docker-compose down -v
+```
+
+### Opção 3: Build e execução da imagem Docker manualmente
+
+Se você quiser construir e rodar apenas o container da aplicação (sem Docker Compose), siga os passos abaixo.
+
+#### 3.1 Build da imagem Docker
+
+```bash
+docker build -t zappqui-auth-service .
+```
+
+> O `Dockerfile` usa **multi-stage build**:
+> 1. **Estágio de build** (`eclipse-temurin:21-jdk-alpine`): compila o projeto com Gradle e gera o JAR
+> 2. **Estágio de runtime** (`eclipse-temurin:21-jre-alpine`): imagem leve apenas com o JRE para rodar o JAR
+
+#### 3.2 Rodar o container
+
+```bash
+docker run -d \
+  --name zappqui-auth-app \
+  -p 8081:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5433/zappqui_auth \
+  -e SPRING_DATASOURCE_USERNAME=zappqui \
+  -e SPRING_DATASOURCE_PASSWORD=zappqui123 \
+  -e SPRING_REDIS_HOST=host.docker.internal \
+  -e SPRING_REDIS_PORT=6379 \
+  zappqui-auth-service
+```
+
+> ⚠️ Para esse comando funcionar, o PostgreSQL e o Redis precisam estar rodando no host (ou em outros containers acessíveis). Use `host.docker.internal` para acessar serviços do host a partir do container.
+
+#### 3.3 Verificar se o container está rodando
+
+```bash
+docker ps
+```
+
+Saída esperada:
+```
+CONTAINER ID   IMAGE                    STATUS                    PORTS                    NAMES
+abc123def456   zappqui-auth-service     Up 30s (healthy)          0.0.0.0:8081->8080/tcp   zappqui-auth-app
+```
+
+#### 3.4 Ver logs do container
+
+```bash
+docker logs -f zappqui-auth-app
+```
+
+#### 3.5 Parar e remover o container
+
+```bash
+docker stop zappqui-auth-app
+docker rm zappqui-auth-app
+```
+
+#### 3.6 Remover a imagem
+
+```bash
+docker rmi zappqui-auth-service
+```
+
+## 🐳 Estrutura do Dockerfile
+
+O projeto utiliza um **Dockerfile multi-stage** para otimizar o tamanho da imagem final:
+
+```
+┌──────────────────────────────────────────────┐
+│  Estágio 1: BUILD (eclipse-temurin:21-jdk)   │
+│                                              │
+│  1. Copia arquivos do Gradle                 │
+│  2. Baixa dependências (camada cacheada)     │
+│  3. Copia código-fonte                       │
+│  4. Compila e gera o JAR                     │
+└──────────────────┬───────────────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────────────┐
+│  Estágio 2: RUNTIME (eclipse-temurin:21-jre) │
+│                                              │
+│  1. Copia apenas o JAR do estágio anterior   │
+│  2. Roda com usuário não-root (segurança)    │
+│  3. Health check via /actuator/health        │
+│  4. Expõe porta 8080                         │
+└──────────────────────────────────────────────┘
+```
+
+**Benefícios**:
+- 🏗️ Imagem final ~200MB (apenas JRE, sem JDK/Gradle/código-fonte)
+- 🔒 Roda com usuário não-root
+- ❤️ Health check integrado
+- ⚡ Cache de dependências do Gradle (builds mais rápidos)
+
+## 🐳 Arquitetura Docker Compose
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   zappqui-network                       │
+│                                                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │  app          │  │ postgres-auth │  │  redis-auth  │  │
+│  │  :8081→8080   │  │  :5433→5432   │  │  :6379→6379  │  │
+│  │  Spring Boot  │──│  PostgreSQL   │  │  Redis 7     │  │
+│  │              │  │  17-alpine    │  │  alpine      │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+│        │                   ▲                ▲           │
+│        └───────────────────┴────────────────┘           │
+│              depends_on (healthy)                       │
+└─────────────────────────────────────────────────────────┘
+```
+
+| Serviço | Container | Imagem | Porta |
+|---|---|---|---|
+| **app** | `zappqui-auth-app` | Build local (`Dockerfile`) | `8081:8080` |
+| **postgres-auth** | `zappqui-auth-db` | `postgres:17-alpine` | `5433:5432` |
+| **redis-auth** | `zappqui-auth-redis` | `redis:7-alpine` | `6379:6379` |
+
 ## 📊 Banco de Dados
 
 ### Configuração PostgreSQL
