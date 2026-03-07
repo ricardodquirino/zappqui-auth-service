@@ -3,6 +3,8 @@ package com.zappqui.api.auth.zappqui_auth_service.service;
 
 import com.zappqui.api.auth.zappqui_auth_service.model.User;
 import com.zappqui.api.auth.zappqui_auth_service.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,10 @@ public class UserService {
 
     public UserService(UserRepository repo) {
         this.repo = repo;
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return repo.findAll(pageable);
     }
 
     @Transactional

@@ -240,7 +240,7 @@ src/test/resources/
     ├─ spring.h2.console.enabled: true
     ├─ spring.redis.host: localhost
     ├─ spring.redis.port: 6379
-    └─ server.port: 8080
+    └─ server.port: 8082
 ```
 
 ---

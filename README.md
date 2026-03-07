@@ -114,7 +114,7 @@ Ou:
 java -jar build/libs/zappqui-auth-service-1.0.0-SNAPSHOT.jar
 ```
 
-A aplicação estará disponível em: `http://localhost:8081`
+A aplicação estará disponível em: `http://localhost:8082`
 
 ### Opção 2: Execução com Docker Compose (Recomendado)
 
@@ -127,7 +127,7 @@ docker-compose up -d
 Este comando inicia:
 - **PostgreSQL 17** em `localhost:5433`
 - **Redis 7** em `localhost:6379`
-- **Aplicação Spring Boot** em `localhost:8081`
+- **Aplicação Spring Boot** em `localhost:8082`
 
 #### 2.2 Parar os serviços
 
@@ -172,7 +172,7 @@ docker build -t zappqui-auth-service .
 ```bash
 docker run -d \
   --name zappqui-auth-app \
-  -p 8081:8080 \
+  -p 8082:8082 \
   -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5433/zappqui_auth \
   -e SPRING_DATASOURCE_USERNAME=zappqui \
   -e SPRING_DATASOURCE_PASSWORD=zappqui123 \
@@ -192,7 +192,7 @@ docker ps
 Saída esperada:
 ```
 CONTAINER ID   IMAGE                    STATUS                    PORTS                    NAMES
-abc123def456   zappqui-auth-service     Up 30s (healthy)          0.0.0.0:8081->8080/tcp   zappqui-auth-app
+abc123def456   zappqui-auth-service     Up 30s (healthy)          0.0.0.0:8082->8082/tcp   zappqui-auth-app
 ```
 
 #### 3.4 Ver logs do container
@@ -235,7 +235,7 @@ O projeto utiliza um **Dockerfile multi-stage** para otimizar o tamanho da image
 │  1. Copia apenas o JAR do estágio anterior   │
 │  2. Roda com usuário não-root (segurança)    │
 │  3. Health check via /actuator/health        │
-│  4. Expõe porta 8080                         │
+│  4. Expõe porta 8082                         │
 └──────────────────────────────────────────────┘
 ```
 
@@ -253,7 +253,7 @@ O projeto utiliza um **Dockerfile multi-stage** para otimizar o tamanho da image
 │                                                         │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │  app          │  │ postgres-auth │  │  redis-auth  │  │
-│  │  :8081→8080   │  │  :5433→5432   │  │  :6379→6379  │  │
+│  │  :8082→8082   │  │  :5433→5432   │  │  :6379→6379  │  │
 │  │  Spring Boot  │──│  PostgreSQL   │  │  Redis 7     │  │
 │  │              │  │  17-alpine    │  │  alpine      │  │
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
@@ -265,7 +265,7 @@ O projeto utiliza um **Dockerfile multi-stage** para otimizar o tamanho da image
 
 | Serviço | Container | Imagem | Porta |
 |---|---|---|---|
-| **app** | `zappqui-auth-app` | Build local (`Dockerfile`) | `8081:8080` |
+| **app** | `zappqui-auth-app` | Build local (`Dockerfile`) | `8082:8082` |
 | **postgres-auth** | `zappqui-auth-db` | `postgres:17-alpine` | `5433:5432` |
 | **redis-auth** | `zappqui-auth-redis` | `redis:7-alpine` | `6379:6379` |
 
@@ -443,9 +443,9 @@ Com a aplicação rodando, acesse:
 
 | Recurso | URL |
 |---|---|
-| **Swagger UI** | [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html) |
-| **OpenAPI JSON** | [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs) |
-| **OpenAPI YAML** | [http://localhost:8081/v3/api-docs.yaml](http://localhost:8081/v3/api-docs.yaml) |
+| **Swagger UI** | [http://localhost:8082/swagger-ui.html](http://localhost:8082/swagger-ui.html) |
+| **OpenAPI JSON** | [http://localhost:8082/v3/api-docs](http://localhost:8082/v3/api-docs) |
+| **OpenAPI YAML** | [http://localhost:8082/v3/api-docs.yaml](http://localhost:8082/v3/api-docs.yaml) |
 
 ### O que está documentado
 
@@ -466,7 +466,7 @@ Cada endpoint inclui:
 
 ### Testando via Swagger UI
 
-1. Acesse `http://localhost:8081/swagger-ui.html`
+1. Acesse `http://localhost:8082/swagger-ui.html`
 2. Expanda o endpoint desejado
 3. Clique em **"Try it out"**
 4. Preencha os campos do request body

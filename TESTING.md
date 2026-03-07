@@ -255,7 +255,7 @@ Teste agrupado com classes aninhadas:
 - **Banco de Dados**: H2 em memória (criação automática)
 - **Flyway**: Desativado para testes (usa `ddl-auto: create-drop`)
 - **Redis**: Simulado/Mockado
-- **Port**: 8080
+- **Port**: 8082
 
 ---
 

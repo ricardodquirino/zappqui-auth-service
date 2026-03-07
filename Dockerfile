@@ -37,11 +37,11 @@ COPY --from=build /app/build/libs/*.jar app.jar
 USER appuser
 
 # Expor porta da aplicação
-EXPOSE 8080
+EXPOSE 8082
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+  CMD wget -qO- http://localhost:8082/actuator/health || exit 1
 
 # Executar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]

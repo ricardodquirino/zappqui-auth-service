@@ -6,12 +6,16 @@ import com.zappqui.api.auth.zappqui_auth_service.service.UserService;
 import com.zappqui.api.auth.zappqui_auth_service.dto.UserCreateRequest;
 import com.zappqui.api.auth.zappqui_auth_service.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +29,23 @@ public class UserController {
 
     public UserController(UserService service) {
         this.service = service;
+    }
+
+    @Operation(summary = "Listar usuários", description = "Lista todos os usuários com paginação. Página padrão: 0, tamanho padrão: 20.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso")
+    })
+    @GetMapping
+    public ResponseEntity<Page<UserResponse>> findAll(
+            @Parameter(description = "Número da página (começa em 0)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de registros por página", example = "20")
+            @RequestParam(defaultValue = "20") int size) {
+
+        Page<UserResponse> users = service.findAll(PageRequest.of(page, size, Sort.by("id").ascending()))
+                .map(user -> new UserResponse(user.getId(), user.getUsername()));
+
+        return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "Criar usuário", description = "Cria um novo usuário no sistema. "

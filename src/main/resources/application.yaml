@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/zappqui_auth
+    url: jdbc:postgresql://localhost:5433/zappqui_auth_db
     username: zappqui
     password: zappqui123
     driver-class-name: org.postgresql.Driver
@@ -18,4 +18,4 @@ spring:
     port: 6379
 
 server:
-  port: 8081
+  port: 8082
